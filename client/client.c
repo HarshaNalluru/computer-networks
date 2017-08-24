@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9001
+#define PORT_NUMBER 9000
 // ./client harshan@123456789:127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
 			char success[BUFFER] = "Received Line ";
 			send(sock, success, strlen(success), 0);
-			printf("%s : %d\n", success, i);	
+			//printf("%s : %d\n", success, i);	
 			i++;
 		}
 
@@ -92,16 +92,5 @@ int main(int argc, char *argv[])
 
 	close(sock);
 
-
-/*
-	while(1){
-		fgets(input, BUFFER, stdin);
-		send(sock, input, strlen(input), 0);
-
-		len = recv(sock, output, BUFFER, 0);
-		output[len] = '\0';
-		printf("%s\n", output);
-
-	}*/
 	return 0;
 }

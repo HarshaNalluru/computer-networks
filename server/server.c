@@ -11,7 +11,7 @@
 #define ERROR -1
 #define MAX_CLIENTS 2
 #define MAX_DATA 1024
-#define PORT_NUMBER 9001
+#define PORT_NUMBER 9000
 
 int main(int argc, char const *argv[])
 {
@@ -65,38 +65,45 @@ int main(int argc, char const *argv[])
 
 	    while (fgets(line, sizeof(line), file)) {
 	        id = strtok(line,"@");
+	        pass = strtok(NULL,"@");
+	        if (pass[strlen(pass)-1]=='\n'){
+	        	pass[strlen(pass)-1] = '\0';
+	        }
 	        if (strcmp(username,id) == 0){
+
 	        	char userok[MAX_DATA] = "Checking for the password...";
 	        	send(new, userok, strlen(userok), 0);
-	        	pass = strtok(NULL,"@");
 	    		data_len = recv(new, password, MAX_DATA, 0);
+	        	
 	        	if (strcmp(password,pass)==0){
 	        		auth = 1;
 	        		char *success = malloc(strlen("Hello ")+strlen(username)+1);
 	        		strcpy(success, "Hello ");
     				strcat(success, username);
+		        
 		        	send(new, success, strlen(success), 0);
 		        	break;
 	        	}
 	        	else{
-		        	char failed[MAX_DATA] = "Authentication Failure!!!";
+		        	char failed[MAX_DATA] = "Authentication Failure1!!!";
 		        	send(new, failed, strlen(failed), 0);
 
 					printf("Client disconnected\n");
 					close(new);
 	        	}
 	        }
-	        else{
-	        	char failed[MAX_DATA] = "Authentication Failure!!!";
-	        	send(new, failed, strlen(failed), 0);
-				printf("Client disconnected\n");
-				close(new);
-	        }
 	    }
 
 	    fclose(file);
 
-	    if (auth == 1){
+	    if (auth!=1){
+        	char failed[MAX_DATA] = "Authentication Failure!!!";
+        	send(new, failed, strlen(failed), 0);
+			
+			printf("Client disconnected\n");
+			close(new);
+	    }
+	    else{
 			data_len = 1;
 			
 			data_len = recv(new, data, MAX_DATA, 0);
@@ -114,10 +121,8 @@ int main(int argc, char const *argv[])
 				while (fgets(line, sizeof(line), file)) {
 					send(new, line, strlen(line), 0);
 					//printf("Sent Line : %s\n", line);
-
 					temp_len = recv(new, temp, MAX_DATA, 0);
 					//printf("Client says : %s\n", temp);
-
 					//printf("%s", line);
 				}
 				fclose(file);
