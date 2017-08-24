@@ -11,7 +11,7 @@
 #define ERROR -1
 #define BUFFER 1024
 #define PORT_NUMBER 9000
-// ./client harshan@123456789:127.0.0.1
+// ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
 	struct sockaddr_in remote_server;
@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
 
 	char * str = argv[1];
 	//printf("%s\n", str);
-	char * username = strtok(str,"@");
-	char * password = strtok(NULL, ":");
-	char * ip_addr = strtok(NULL, ":");
+	char * username = strtok(str,":");
+	char * password = strtok(NULL, "@");
+	char * ip_addr = strtok(NULL, "@");
 
 	remote_server.sin_family = AF_INET;
 	remote_server.sin_port = htons(PORT_NUMBER);
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 
-
 	send(sock, username, strlen(username), 0);
 	len = recv(sock, output, BUFFER, 0);
 	output[len] = '\0';
@@ -51,9 +50,6 @@ int main(int argc, char *argv[])
 	len = recv(sock, output, BUFFER, 0);
 	output[len] = '\0';
 	printf("%s\n", output);
-
-
-
 
 	fgets(input, BUFFER, stdin);
 	send(sock, input, strlen(input), 0);
@@ -83,10 +79,11 @@ int main(int argc, char *argv[])
 			char success[BUFFER] = "Received Line ";
 			send(sock, success, strlen(success), 0);
 			//printf("%s : %d\n", success, i);	
+			//printf(".\n");
 			i++;
 		}
 
-		printf("%s Downloaded..!\n", input);
+		printf("------------------------%s Downloaded..!\n", input);
 		fclose(file);
 	}
 

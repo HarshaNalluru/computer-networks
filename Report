@@ -1,11 +1,78 @@
+The following lines provide a concise overview of the code in the documents server.c and client.c in a block-wise sequence.
+
+server.c
+	[29-40]
+		Created a socket and bind the server(port 9000 - macro variable) to the socket
+	[43-44]
+		Listens for clients
+	[48]
+		Infinite loop to allow service 
+	[49-55]
+		Accepts connection from new client
+	[56-94]
+		Checks if the user exists in 'users.txt'. If Yes, then checks for the password and also notifies the client by sending a msg,
+		1. If password Matched, then sends “Hello <username>” to the client.
+		2. Else sends message “Authentication Failure!!!”, and terminates the
+		connection.
+	[98-104]
+		If the user doesn't exist, then sends message “Authentication Failure!!!”, and terminates the
+		connection.
+	[106-110]
+		Receives the input file name from the client
+	[113-128]
+		If file exists, then sends a message saying "Download Initiated...". Then, opens the file and sends the client line by line and receives acknowledgement. Once done, closes the file.
+	[129-132]
+		If file doesn't exist, the message “File Not Found” is sent.
+	[134-135]
+		Terminates the connection with the client 
+
+client.c
+	[23-37]
+		Created a socket and bind the server(port 9000 - macro variable) to the socket
+	[28-32]
+		Parses the argv - <username:password@serverip> into username, password, ip_addr
+	[39-42]
+		Connects the server, notifies if any error
+	[45-48]
+		Sends the username, 
+		1. if exists, then receives the message - "Checking for the password...",
+		2. else the message - "Authentication Failure!!!" and terminates the connection
+	[50-53]
+		Sends the password
+		1. if matches, then receives the message - "Hello " <username>
+		2. else the message - "Authentication Failure!!!" and terminates the connection
+	[58-66]
+		Takes filename as input from the user, 
+		Receives the message - "File Not Found", if the file is not present and the connection is terminated
+		Receives the message - "Download Initiated...", if the file is present
+	[68-92]
+		Opens a new file and writes the received messages line by line and sends the server the acknowledgement
+		Then closes the file
+	[93-94]
+		Closes the connection
+
+
+
+Assumptions and Limitations:
+	1. PORT_NUMBER is hard_coded to 9000 in both server.c and client.c ( #define PORT_NUMBER 9000 )
+	2. username and password can not contain ':'
+	3. Run the server using ./server
+	4. Run the client using ./client harshan:123456789@127.0.0.1
+		[all_users_list present in users.txt]
+	5. Then, <file> is to be requested, just by entering the filename
+	6. After one request of the client is serviced, the server terminates the connection with that client.
+	7. Client exits once the file download completes or if the server does not have that file.
+
+
+
 References:
 	https://www.youtube.com/playlist?list=PL0JmC-T2nhdgJ2Lw5YdufR8MffaQdAvEf
+	https://stackoverflow.com/questions/9206091/going-through-a-text-file-line-by-line-in-c
+	https://stackoverflow.com/questions/30213716/how-to-properly-append-lines-to-already-existing-file
+	https://stackoverflow.com/questions/35197575/in-c-how-to-print-out-a-txt-file-line-by-line
 	https://www.tutorialspoint.com/c_standard_library/c_function_fgets.htm
 	https://stackoverflow.com/questions/3501338/c-read-file-line-by-line
 	https://www.programiz.com/c-programming/library-function/string.h/strcmp
 	http://www.cplusplus.com/reference/cstring/strtok/
-	https://stackoverflow.com/questions/9206091/going-through-a-text-file-line-by-line-in-c
-	https://stackoverflow.com/questions/30213716/how-to-properly-append-lines-to-already-existing-file
-	https://stackoverflow.com/questions/35197575/in-c-how-to-print-out-a-txt-file-line-by-line
 	https://stackoverflow.com/questions/18950835/printing-to-a-file-in-c
 	https://stackoverflow.com/questions/34008206/how-to-create-a-new-text-file-in-c

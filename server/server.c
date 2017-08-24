@@ -9,7 +9,6 @@
 #include <arpa/inet.h>
 
 #define ERROR -1
-#define MAX_CLIENTS 2
 #define MAX_DATA 1024
 #define PORT_NUMBER 9000
 
@@ -41,7 +40,7 @@ int main(int argc, char const *argv[])
 		exit(-1);
 	}
 
-	if ((listen(sock, MAX_CLIENTS)) == ERROR){
+	if ((listen(sock, 5)) == ERROR){
 		perror("listen");
 		exit(-1);
 	}
@@ -85,7 +84,7 @@ int main(int argc, char const *argv[])
 		        	break;
 	        	}
 	        	else{
-		        	char failed[MAX_DATA] = "Authentication Failure1!!!";
+		        	char failed[MAX_DATA] = "Authentication Failure!!!";
 		        	send(new, failed, strlen(failed), 0);
 
 					printf("Client disconnected\n");
